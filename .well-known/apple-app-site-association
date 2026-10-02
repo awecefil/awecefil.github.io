@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["TEAM_ID.com.personal.mealprepplanner"],
+        "components": [
+          { "/": "/r", "comment": "食譜分享連結，資料在 # 後面" },
+          { "/": "/r/", "comment": "GitHub Pages 會把 /r 轉址成 /r/" }
+        ]
+      }
+    ]
+  }
+}

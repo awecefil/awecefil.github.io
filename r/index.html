@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>有人分享了一道食譜給你</title>
+<style>
+  :root { color-scheme: light dark; --bg: #f2f2f7; --card: #fff; --ink: #1c1c1e; --muted: #6e6e73; --accent: #2f6d4f; }
+  @media (prefers-color-scheme: dark) { :root { --bg: #000; --card: #1c1c1e; --ink: #f2f2f7; --muted: #98989d; --accent: #6fbf93; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.5 -apple-system, "PingFang TC", "Noto Sans TC", sans-serif; }
+  main { max-width: 420px; margin: 0 auto; padding: 48px 20px; }
+  .card { background: var(--card); border-radius: 20px; padding: 28px 22px; }
+  h1 { font-size: 22px; margin: 0 0 6px; }
+  p { margin: 0 0 18px; color: var(--muted); font-size: 15px; }
+  ol { padding-left: 20px; margin: 0; }
+  li { margin-bottom: 18px; }
+  .button { display: block; text-align: center; text-decoration: none; padding: 13px; border-radius: 13px; font-weight: 600; margin-top: 8px; }
+  .primary { background: var(--accent); color: #fff; }
+  .secondary { border: 1px solid var(--muted); color: var(--ink); }
+  .disabled { opacity: .45; pointer-events: none; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 22px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>有人分享了一道食譜給你</h1>
+    <p>用 App 打開就能看到菜色，確認後加進你的食譜庫。</p>
+    <ol>
+      <li>還沒有 App 的話，先安裝：
+        <a class="button secondary disabled" id="download" href="#">App 尚未上架</a>
+      </li>
+      <li>裝好之後，回到這一頁按：
+        <a class="button primary" id="open" href="#">用 App 開啟</a>
+      </li>
+    </ol>
+    <p class="note" id="status"></p>
+  </div>
+</main>
+<script>
+  // 這一頁刻意不顯示食譜的任何內容（見 docs/adr/0011-share-link-security-model.md）：
+  // 連結 # 後面的資料是分享者寫的，顯示在這個網域上就能被拿來冒充官方訊息。
+  // 這裡只做一件事：把 # 後面的資料原封不動交給 App。
+  (function () {
+    var fragment = window.location.hash.slice(1);
+    var open = document.getElementById("open");
+    var status = document.getElementById("status");
+    // 只接受格式版本 1 加 base64url 字元，其他一律不組連結。
+    if (/^1[A-Za-z0-9_-]{1,12000}$/.test(fragment)) {
+      open.href = "mealprep://r#" + fragment;
+    } else {
+      open.classList.add("disabled");
+      status.textContent = "這條連結不完整，請向分享的人重新要一次。";
+    }
+  })();
+</script>
+</body>
+</html>
